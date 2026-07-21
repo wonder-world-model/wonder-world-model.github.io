@@ -1,0 +1,1169 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Wonder is an interactive video world model for image- and video-conditioned world generation."
+    />
+    <title>Wonder</title>
+    <link rel="icon" type="image/png" href="./assets/w_logo.png" />
+    <link rel="stylesheet" href="./styles.css?v=loading-state-20260720" />
+    <script src="./script.js?v=loading-state-20260720" defer></script>
+  </head>
+  <body>
+    <header class="site-header" id="top">
+      <div class="brand" aria-label="Wonder">
+        <span class="brand-mark"></span>
+        <span>Wonder</span>
+      </div>
+      <nav aria-label="Primary navigation">
+        <a href="#overview">Overview</a>
+        <a href="#method">Method</a>
+        <a href="#demos">Demos</a>
+        <a href="#comparison">Comparison</a>
+        <a href="#citation">Citation</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <h1>
+            <span>Wonder: Video World Model</span>
+            <span>Done Better</span>
+          </h1>
+          <p class="authors" aria-label="Authors">
+            <a href="https://www.jiacongxu.net/" target="_blank" rel="noopener">Jiacong Xu<sup>*</sup></a>,
+            <a href="https://hwjiang1510.github.io/" target="_blank" rel="noopener">Hanwen Jiang</a>,
+            <a href="https://zhixinshu.github.io/" target="_blank" rel="noopener">Zhixin Shu</a>,
+            <a href="https://www.kalyans.org/" target="_blank" rel="noopener">Kalyan Sunkavalli</a>,
+            <a href="https://engineering.jhu.edu/vpatel36/vishal-patel/" target="_blank" rel="noopener">Vishal Patel</a>,
+            <a href="https://yiqunmei.net/" target="_blank" rel="noopener">Yiqun Mei<sup>*&dagger;</sup></a>
+          </p>
+          <p class="affiliations" aria-label="Affiliations">Johns Hopkins University, Adobe Research</p>
+          <div class="actions">
+            <a href="#">
+              <svg class="action-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 3.5h7l4 4v13H7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+                <path d="M14 3.5v4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+                <path d="M9.5 12h6M9.5 15.5h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+              </svg>
+              <span>Technical Report</span>
+            </a>
+            <a href="#">
+              <svg class="action-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  fill="currentColor"
+                  d="M12 .5A11.5 11.5 0 0 0 .5 12.24c0 5.2 3.36 9.6 8.03 11.16.58.11.79-.26.79-.57v-2.02c-3.27.73-3.96-1.61-3.96-1.61-.53-1.39-1.3-1.76-1.3-1.76-1.07-.75.08-.74.08-.74 1.18.09 1.8 1.25 1.8 1.25 1.05 1.84 2.76 1.31 3.43 1 .11-.78.41-1.31.75-1.61-2.61-.31-5.36-1.34-5.36-5.95 0-1.31.46-2.39 1.2-3.23-.12-.31-.52-1.55.12-3.19 0 0 .99-.32 3.2 1.23.93-.27 1.93-.4 2.92-.4.99 0 1.99.13 2.92.4 2.21-1.55 3.19-1.23 3.19-1.23.65 1.64.25 2.88.13 3.19.75.84 1.2 1.92 1.2 3.23 0 4.62-2.75 5.63-5.37 5.94.42.38.8 1.12.8 2.26v3.34c0 .32.21.69.8.57A11.76 11.76 0 0 0 23.5 12.24 11.5 11.5 0 0 0 12 .5Z"
+                />
+              </svg>
+              <span>Code (coming soon)</span>
+            </a>
+            <a href="#">
+              <img
+                class="action-icon action-icon-image"
+                src="./assets/huggingface-logo.svg"
+                alt=""
+                aria-hidden="true"
+              />
+              <span>HuggingFace (coming soon)</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="hero-showcase" aria-label="Hero media preview">
+          <video
+            src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/demo_video_720p.m4v"
+            poster="./assets/demo-video-poster.jpg"
+            controls
+            loop
+            playsinline
+            preload="metadata"
+          ></video>
+          <div class="showcase-fallback" aria-hidden="true"></div>
+        </div>
+
+        <div class="metric-row" aria-label="Project highlights">
+          <article>
+            <strong>I2V+V2V</strong>
+            <span>Multimodality</span>
+          </article>
+          <article>
+            <strong>0.5s</strong>
+            <span>Constant Latency</span>
+          </article>
+          <article>
+            <strong>16 FPS</strong>
+            <span>Throughput</span>
+          </article>
+          <article>
+            <strong>6-DoF</strong>
+            <span>camera control</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="section overview" id="overview">
+        <div class="section-heading">
+          <p class="eyebrow">Overview</p>
+          <h2>Abstract</h2>
+        </div>
+        <div class="text-block">
+          <p>
+            Given an image or video, <strong class="future-orange">Wonder</strong> builds a
+            persistent interactive world that users can navigate by moving the camera, revealing
+            unseen regions, and returning to previously observed areas with constant latency for up
+            to one minute. This requires system-level co-design across control representation,
+            memory mechanism, and training strategy. <strong class="future-orange">Wonder</strong>
+            turns camera motion into dense visual evidence, retrieves relevant full-fidelity
+            history through sparse attention, and uses a rectified distillation pipeline to
+            preserve control and long-term consistency. Together, these components enable diverse
+            16 FPS rollouts with coherent geometry, appearance, dynamics, and interactive control
+            across image-to-video and video-conditioned generation.
+          </p>
+        </div>
+      </section>
+
+      <section class="section method" id="method">
+        <div class="section-heading">
+          <p class="eyebrow">Method</p>
+          <h2>System-Level Co-Design</h2>
+        </div>
+        <div class="capability-grid">
+          <article>
+            <span>01</span>
+            <h3>Control Signal</h3>
+            <p>
+              Rendering a synthetic camera space with a 3D scaffold and environment map, turning
+              translation and rotation into dense, frame-aligned visual evidence.
+            </p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>Memory Mechanism</h3>
+            <p>
+              Keeping full-fidelity history KV caches and adaptively selecting relevant entries via
+              sparse attention to preserve long-horizon memory at constant latency.
+            </p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>Training Strategy</h3>
+            <p>
+              Improving student capacity with a Mixture-of-Students design and
+              resolving camera drift during distillation via GAN Control Regularization.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section demos" id="demos">
+        <div class="section-heading">
+          <p class="eyebrow">Demos</p>
+          <h2>Image-to-Video Game Worlds</h2>
+        </div>
+
+        <section class="demo-player" data-demo-player>
+          <div class="demo-stage">
+            <video
+              data-demo-video
+              src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/i2v_game/game_01.mp4"
+              autoplay
+              muted
+              loop
+              playsinline
+              preload="metadata"
+            ></video>
+            <div class="video-fallback" aria-hidden="true"></div>
+            <button class="expand" type="button" aria-label="Expand selected demo video">Expand</button>
+          </div>
+        </section>
+
+        <div class="demo-picker" aria-label="Demo scenes">
+          <button
+            class="demo-option is-active"
+            type="button"
+            aria-label="Play sample 0193"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/i2v_game/game_01.mp4"
+          >
+            <img
+              src="./assets/previews/game_01.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0019"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/i2v_game/game_02.mp4"
+          >
+            <img
+              src="./assets/previews/game_02.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0188"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/i2v_game/game_03.mp4"
+          >
+            <img
+              src="./assets/previews/game_03.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0190"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/i2v_game/game_04.mp4"
+          >
+            <img
+              src="./assets/previews/game_04.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0195"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/i2v_game/game_05.mp4"
+          >
+            <img
+              src="./assets/previews/game_05.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0198"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/i2v_game/game_06.mp4"
+          >
+            <img
+              src="./assets/previews/game_06.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0202"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/i2v_game/game_07.mp4"
+          >
+            <img
+              src="./assets/previews/game_07.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0203"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/i2v_game/game_08.mp4"
+          >
+            <img
+              src="./assets/previews/game_08.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0208"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/i2v_game/game_09.mp4"
+          >
+            <img
+              src="./assets/previews/game_09.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0216"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/i2v_game/game_10.mp4"
+          >
+            <img
+              src="./assets/previews/game_10.jpg"
+              alt=""
+            />
+          </button>
+        </div>
+
+      </section>
+
+      <section class="section demos">
+        <div class="section-heading">
+          <p class="eyebrow">Demos</p>
+          <h2>Image-to-Video Cartoon Worlds</h2>
+        </div>
+
+        <section class="demo-player" data-demo-player>
+          <div class="demo-stage">
+            <video
+              data-demo-video
+              src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/i2v_cartoon/cartoon_01.mp4"
+              autoplay
+              muted
+              loop
+              playsinline
+              preload="metadata"
+            ></video>
+            <div class="video-fallback" aria-hidden="true"></div>
+            <button class="expand" type="button" aria-label="Expand selected cartoon demo video">Expand</button>
+          </div>
+        </section>
+
+        <div class="demo-picker" aria-label="Cartoon demo scenes">
+          <button
+            class="demo-option is-active"
+            type="button"
+            aria-label="Play sample 0116"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/i2v_cartoon/cartoon_01.mp4"
+          >
+            <img
+              src="./assets/previews/cartoon_01.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0290"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/i2v_cartoon/cartoon_02.mp4"
+          >
+            <img
+              src="./assets/previews/cartoon_02.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0075"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/i2v_cartoon/cartoon_03.mp4"
+          >
+            <img
+              src="./assets/previews/cartoon_03.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0117"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/i2v_cartoon/cartoon_04.mp4"
+          >
+            <img
+              src="./assets/previews/cartoon_04.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0141"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/i2v_cartoon/cartoon_05.mp4"
+          >
+            <img
+              src="./assets/previews/cartoon_05.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0168"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/i2v_cartoon/cartoon_06.mp4"
+          >
+            <img
+              src="./assets/previews/cartoon_06.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0170"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/i2v_cartoon/cartoon_07.mp4"
+          >
+            <img
+              src="./assets/previews/cartoon_07.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0310"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/i2v_cartoon/cartoon_08.mp4"
+          >
+            <img
+              src="./assets/previews/cartoon_08.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0311"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/i2v_cartoon/cartoon_09.mp4"
+          >
+            <img
+              src="./assets/previews/cartoon_09.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0312"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/i2v_cartoon/cartoon_10.mp4"
+          >
+            <img
+              src="./assets/previews/cartoon_10.jpg"
+              alt=""
+            />
+          </button>
+        </div>
+      </section>
+
+      <section class="section demos">
+        <div class="section-heading">
+          <p class="eyebrow">Demos</p>
+          <h2>Image-to-Video Real Worlds</h2>
+        </div>
+
+        <section class="demo-player" data-demo-player>
+          <div class="demo-stage">
+            <video
+              data-demo-video
+              src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/i2v_real/real_01.mp4"
+              autoplay
+              muted
+              loop
+              playsinline
+              preload="metadata"
+            ></video>
+            <div class="video-fallback" aria-hidden="true"></div>
+            <button class="expand" type="button" aria-label="Expand selected real-world demo video">Expand</button>
+          </div>
+        </section>
+
+        <div class="demo-picker" aria-label="Real-world demo scenes">
+          <button
+            class="demo-option is-active"
+            type="button"
+            aria-label="Play sample 0227"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/i2v_real/real_01.mp4"
+          >
+            <img
+              src="./assets/previews/real_01.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0102"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/i2v_real/real_02.mp4"
+          >
+            <img
+              src="./assets/previews/real_02.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0220"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/i2v_real/real_03.mp4"
+          >
+            <img
+              src="./assets/previews/real_03.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0089"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/i2v_real/real_04.mp4"
+          >
+            <img
+              src="./assets/previews/real_04.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0239"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/i2v_real/real_05.mp4"
+          >
+            <img
+              src="./assets/previews/real_05.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0255"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/i2v_real/real_06.mp4"
+          >
+            <img
+              src="./assets/previews/real_06.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0263"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/i2v_real/real_07.mp4"
+          >
+            <img
+              src="./assets/previews/real_07.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0267"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/i2v_real/real_08.mp4"
+          >
+            <img
+              src="./assets/previews/real_08.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0271"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/i2v_real/real_09.mp4"
+          >
+            <img
+              src="./assets/previews/real_09.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0275"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/i2v_real/real_10.mp4"
+          >
+            <img
+              src="./assets/previews/real_10.jpg"
+              alt=""
+            />
+          </button>
+        </div>
+      </section>
+
+      <section class="section demos">
+        <div class="section-heading">
+          <p class="eyebrow">Demos</p>
+          <h2>Complex Camera Movement</h2>
+        </div>
+
+        <section class="demo-player" data-demo-player>
+          <div class="demo-stage">
+            <video
+              data-demo-video
+              src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/complex_camera/camera_01.mp4"
+              autoplay
+              muted
+              loop
+              playsinline
+              preload="metadata"
+            ></video>
+            <div class="video-fallback" aria-hidden="true"></div>
+            <button class="expand" type="button" aria-label="Expand selected complex camera demo video">Expand</button>
+          </div>
+        </section>
+
+        <div class="demo-picker" aria-label="Complex camera movement demo scenes">
+          <button
+            class="demo-option is-active"
+            type="button"
+            aria-label="Play sample 0074"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/complex_camera/camera_01.mp4"
+          >
+            <img
+              src="./assets/previews/camera_01.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0003"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/complex_camera/camera_02.mp4"
+          >
+            <img
+              src="./assets/previews/camera_02.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0008"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/complex_camera/camera_03.mp4"
+          >
+            <img
+              src="./assets/previews/camera_03.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0068"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/complex_camera/camera_04.mp4"
+          >
+            <img
+              src="./assets/previews/camera_04.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0095"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/complex_camera/camera_05.mp4"
+          >
+            <img
+              src="./assets/previews/camera_05.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0146"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/complex_camera/camera_06.mp4"
+          >
+            <img
+              src="./assets/previews/camera_06.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0157"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/complex_camera/camera_07.mp4"
+          >
+            <img
+              src="./assets/previews/camera_07.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0159"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/complex_camera/camera_08.mp4"
+          >
+            <img
+              src="./assets/previews/camera_08.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0212"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/complex_camera/camera_09.mp4"
+          >
+            <img
+              src="./assets/previews/camera_09.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0238"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/complex_camera/camera_10.mp4"
+          >
+            <img
+              src="./assets/previews/camera_10.jpg"
+              alt=""
+            />
+          </button>
+        </div>
+      </section>
+
+      <section class="section demos">
+        <div class="section-heading">
+          <p class="eyebrow">Demos</p>
+          <h2>Video-to-Video Real Worlds</h2>
+        </div>
+
+        <section class="demo-player" data-demo-player>
+          <div class="demo-stage">
+            <video
+              data-demo-video
+              src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/v2v_real/v2v_real_01.mp4"
+              autoplay
+              muted
+              loop
+              playsinline
+              preload="metadata"
+            ></video>
+            <div class="video-fallback" aria-hidden="true"></div>
+            <button class="expand" type="button" aria-label="Expand selected video-to-video real-world demo">Expand</button>
+          </div>
+        </section>
+
+        <div class="demo-picker" aria-label="Video-to-video real-world demo scenes">
+          <button
+            class="demo-option is-active"
+            type="button"
+            aria-label="Play sample 0336"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/v2v_real/v2v_real_01.mp4"
+          >
+            <img
+              src="./assets/previews/v2v_real_01.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0199"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/v2v_real/v2v_real_02.mp4"
+          >
+            <img
+              src="./assets/previews/v2v_real_02.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0225"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/v2v_real/v2v_real_03.mp4"
+          >
+            <img
+              src="./assets/previews/v2v_real_03.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0360"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/v2v_real/v2v_real_04.mp4"
+          >
+            <img
+              src="./assets/previews/v2v_real_04.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0441"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/v2v_real/v2v_real_05.mp4"
+          >
+            <img
+              src="./assets/previews/v2v_real_05.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0444"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/v2v_real/v2v_real_06.mp4"
+          >
+            <img
+              src="./assets/previews/v2v_real_06.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0437"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/v2v_real/v2v_real_07.mp4"
+          >
+            <img
+              src="./assets/previews/v2v_real_07.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0483"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/v2v_real/v2v_real_08.mp4"
+          >
+            <img
+              src="./assets/previews/v2v_real_08.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0494"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/v2v_real/v2v_real_09.mp4"
+          >
+            <img
+              src="./assets/previews/v2v_real_09.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0572"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/v2v_real/v2v_real_10.mp4"
+          >
+            <img
+              src="./assets/previews/v2v_real_10.jpg"
+              alt=""
+            />
+          </button>
+        </div>
+      </section>
+
+      <section class="section demos title-wide">
+        <div class="section-heading">
+          <p class="eyebrow">Demos</p>
+          <h2>Video-to-Video Cartoon &amp; Game Worlds</h2>
+        </div>
+
+        <section class="demo-player" data-demo-player>
+          <div class="demo-stage">
+            <video
+              data-demo-video
+              src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/v2v_cartoon_game/v2v_cartoon_game_01.mp4"
+              autoplay
+              muted
+              loop
+              playsinline
+              preload="metadata"
+            ></video>
+            <div class="video-fallback" aria-hidden="true"></div>
+            <button class="expand" type="button" aria-label="Expand selected video-to-video cartoon and game demo">Expand</button>
+          </div>
+        </section>
+
+        <div class="demo-picker is-dense" aria-label="Video-to-video cartoon and game demo scenes">
+          <button
+            class="demo-option is-active"
+            type="button"
+            aria-label="Play sample 00285"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/v2v_cartoon_game/v2v_cartoon_game_01.mp4"
+          >
+            <img
+              src="./assets/previews/v2v_cartoon_game_01.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0096"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/v2v_cartoon_game/v2v_cartoon_game_02.mp4"
+          >
+            <img
+              src="./assets/previews/v2v_cartoon_game_02.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0117"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/v2v_cartoon_game/v2v_cartoon_game_03.mp4"
+          >
+            <img
+              src="./assets/previews/v2v_cartoon_game_03.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0123"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/v2v_cartoon_game/v2v_cartoon_game_04.mp4"
+          >
+            <img
+              src="./assets/previews/v2v_cartoon_game_04.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0124"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/v2v_cartoon_game/v2v_cartoon_game_05.mp4"
+          >
+            <img
+              src="./assets/previews/v2v_cartoon_game_05.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0146"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/v2v_cartoon_game/v2v_cartoon_game_06.mp4"
+          >
+            <img
+              src="./assets/previews/v2v_cartoon_game_06.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0153"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/v2v_cartoon_game/v2v_cartoon_game_07.mp4"
+          >
+            <img
+              src="./assets/previews/v2v_cartoon_game_07.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0171"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/v2v_cartoon_game/v2v_cartoon_game_08.mp4"
+          >
+            <img
+              src="./assets/previews/v2v_cartoon_game_08.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0342"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/v2v_cartoon_game/v2v_cartoon_game_09.mp4"
+          >
+            <img
+              src="./assets/previews/v2v_cartoon_game_09.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0527"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/v2v_cartoon_game/v2v_cartoon_game_10.mp4"
+          >
+            <img
+              src="./assets/previews/v2v_cartoon_game_10.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0586"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/v2v_cartoon_game/v2v_cartoon_game_11.mp4"
+          >
+            <img
+              src="./assets/previews/v2v_cartoon_game_11.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0651"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/v2v_cartoon_game/v2v_cartoon_game_12.mp4"
+          >
+            <img
+              src="./assets/previews/v2v_cartoon_game_12.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0652"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/v2v_cartoon_game/v2v_cartoon_game_13.mp4"
+          >
+            <img
+              src="./assets/previews/v2v_cartoon_game_13.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0664"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/v2v_cartoon_game/v2v_cartoon_game_14.mp4"
+          >
+            <img
+              src="./assets/previews/v2v_cartoon_game_14.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0680"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/v2v_cartoon_game/v2v_cartoon_game_15.mp4"
+          >
+            <img
+              src="./assets/previews/v2v_cartoon_game_15.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0694"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/v2v_cartoon_game/v2v_cartoon_game_16.mp4"
+          >
+            <img
+              src="./assets/previews/v2v_cartoon_game_16.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0701"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/v2v_cartoon_game/v2v_cartoon_game_17.mp4"
+          >
+            <img
+              src="./assets/previews/v2v_cartoon_game_17.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0702"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/v2v_cartoon_game/v2v_cartoon_game_18.mp4"
+          >
+            <img
+              src="./assets/previews/v2v_cartoon_game_18.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0709"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/v2v_cartoon_game/v2v_cartoon_game_19.mp4"
+          >
+            <img
+              src="./assets/previews/v2v_cartoon_game_19.jpg"
+              alt=""
+            />
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play sample 0734"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/v2v_cartoon_game/v2v_cartoon_game_20.mp4"
+          >
+            <img
+              src="./assets/previews/v2v_cartoon_game_20.jpg"
+              alt=""
+            />
+          </button>
+        </div>
+      </section>
+
+      <section class="section demos comparison" id="comparison">
+        <div class="section-heading">
+          <p class="eyebrow">Comparison</p>
+          <h2>Compare with SOTA Models</h2>
+        </div>
+
+        <section class="demo-player" data-demo-player>
+          <div class="demo-stage">
+            <video
+              data-demo-video
+              src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/comparison/comparison_01.mp4"
+              autoplay
+              muted
+              loop
+              playsinline
+              preload="metadata"
+            ></video>
+            <div class="video-fallback" aria-hidden="true"></div>
+            <button class="expand" type="button" aria-label="Expand selected comparison video">Expand</button>
+          </div>
+        </section>
+
+        <div class="demo-picker comparison-picker" aria-label="Comparison samples">
+          <button
+            class="demo-option is-active"
+            type="button"
+            aria-label="Play comparison sample 0201"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/comparison/comparison_01.mp4"
+          >
+            <video src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/comparison/comparison_01.mp4" muted playsinline preload="metadata"></video>
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play comparison sample 0297"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/comparison/comparison_02.mp4"
+          >
+            <video src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/comparison/comparison_02.mp4" muted playsinline preload="metadata"></video>
+          </button>
+          <button
+            class="demo-option"
+            type="button"
+            aria-label="Play comparison sample 0314"
+            data-src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/comparison/comparison_03.mp4"
+          >
+            <video src="https://pub-ca0ffc19900b40b8adf0087172d3caf5.r2.dev/website/media/comparison/comparison_03.mp4" muted playsinline preload="metadata"></video>
+          </button>
+        </div>
+      </section>
+
+      <section class="section citation" id="citation">
+        <div class="section-heading">
+          <p class="eyebrow">Citation</p>
+        </div>
+        <div class="citation-box">
+          <button class="copy" type="button" data-copy="#bibtex">Copy BibTeX</button>
+          <pre><code id="bibtex">@article{wonder2026,
+  title={Interactive Video World Model Done Better},
+  author={Jiacong Xu and Hanwen Jiang and Zhixin Shu and Vishal Patel and Yiqun Mei},
+  institution={Johns Hopkins University and Adobe Research},
+  journal={arXiv preprint arXiv:0000.00000},
+  year={2026}
+}</code></pre>
+        </div>
+      </section>
+
+      <section class="notice" aria-label="Notice">
+        <p>
+          <strong>Notice:</strong> All images and videos on this page are used solely for research and demonstration purposes.
+          Copyrights remain with their respective owners. If you believe any content infringes your rights,
+          please contact us, and we will promptly remove the corresponding example.
+        </p>
+      </section>
+    </main>
+
+    <div class="lightbox" hidden>
+      <button class="lightbox-close" type="button" aria-label="Close expanded video">Close</button>
+      <video controls autoplay muted loop playsinline></video>
+    </div>
+  </body>
+</html>
