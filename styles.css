@@ -180,6 +180,21 @@ video {
   line-height: 1.45;
 }
 
+.contributions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+  margin: 0.48rem 0 0;
+  color: rgba(244, 247, 251, 0.48);
+  font-size: clamp(0.78rem, 0.9vw, 0.88rem);
+  line-height: 1.4;
+}
+
+.contributions sup {
+  color: rgba(244, 247, 251, 0.72);
+}
+
 .actions {
   justify-content: center;
   display: flex;
@@ -229,7 +244,7 @@ video {
 .hero-showcase {
   position: relative;
   min-width: 0;
-  width: min(960px, 100%);
+  width: min(820px, 100%);
   margin: 0 auto;
   aspect-ratio: 26 / 15;
   overflow: hidden;
@@ -556,7 +571,7 @@ video {
 
 .demo-player {
   display: block;
-  width: min(832px, 100%);
+  width: min(720px, 90%);
   margin-top: clamp(2rem, 4vw, 3.5rem);
   margin-right: auto;
   margin-left: auto;
@@ -684,6 +699,86 @@ video {
 .demo-picker.is-dense {
   grid-template-columns: repeat(10, minmax(0, 1fr));
   gap: 0.42rem;
+}
+
+.demo-carousel {
+  position: relative;
+  width: min(720px, 90%);
+  margin: 1rem auto 0;
+}
+
+.demo-carousel .demo-picker,
+.demo-carousel .demo-picker.is-dense {
+  display: grid;
+  grid-template-columns: none;
+  grid-auto-flow: column;
+  grid-auto-columns: clamp(86px, 16vw, 104px);
+  gap: 0.5rem;
+  width: 100%;
+  margin: 0;
+  padding: 0.3rem 2.75rem 0.65rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-padding-inline: 2.75rem;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.demo-carousel .demo-picker::-webkit-scrollbar {
+  display: none;
+}
+
+.demo-carousel .demo-picker.is-dragging {
+  scroll-snap-type: none;
+  cursor: grabbing;
+}
+
+.demo-carousel .demo-option {
+  scroll-snap-align: start;
+}
+
+.demo-carousel-button {
+  position: absolute;
+  z-index: 4;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 2.15rem;
+  height: 2.15rem;
+  padding: 0;
+  border: 1px solid rgba(244, 247, 251, 0.28);
+  border-radius: 999px;
+  background: rgba(3, 5, 7, 0.82);
+  color: var(--text);
+  font-size: 1.05rem;
+  line-height: 1;
+  transform: translateY(-56%);
+  transition: border-color 0.18s, background 0.18s, opacity 0.18s, transform 0.18s;
+  backdrop-filter: blur(12px);
+}
+
+.demo-carousel-button:hover:not(:disabled),
+.demo-carousel-button:focus-visible {
+  border-color: rgba(91, 231, 255, 0.82);
+  background: rgba(11, 20, 29, 0.94);
+  outline: none;
+  transform: translateY(-56%) scale(1.05);
+}
+
+.demo-carousel-button:disabled {
+  opacity: 0.28;
+  cursor: default;
+}
+
+.demo-carousel-button.is-prev {
+  left: 0.35rem;
+}
+
+.demo-carousel-button.is-next {
+  right: 0.35rem;
 }
 
 .comparison-picker {
@@ -941,13 +1036,6 @@ video {
     grid-template-columns: 1fr;
   }
 
-  .demo-picker {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .demo-picker.is-dense {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-  }
 }
 
 @media (max-width: 680px) {
@@ -979,10 +1067,6 @@ video {
 
   .featured-demo {
     min-height: 380px;
-  }
-
-  .demo-picker {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .compare {
