@@ -184,15 +184,15 @@ video {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 0.35rem 1rem;
-  margin: 0.48rem 0 0;
-  color: rgba(244, 247, 251, 0.48);
-  font-size: clamp(0.78rem, 0.9vw, 0.88rem);
-  line-height: 1.4;
+  gap: 0.25rem 0.75rem;
+  margin: 0.32rem 0 0;
+  color: rgba(244, 247, 251, 0.32);
+  font-size: clamp(0.66rem, 0.72vw, 0.74rem);
+  line-height: 1.35;
 }
 
 .contributions sup {
-  color: rgba(244, 247, 251, 0.72);
+  color: rgba(244, 247, 251, 0.5);
 }
 
 .actions {
